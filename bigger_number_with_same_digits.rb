@@ -26,13 +26,13 @@ def bigger_with_same_digits(num)
   rdigits.inject(nfull) { |acc,d| acc*10+d }
 end
 
-[ 56, 128, 687, 9824 ]
+[ 56, 128, 687, 9824, 867 ]
   .each do |i|
     res = bigger_with_same_digits(i)
     assert res > i && res.to_s.size == i.to_s.size, "#{res} > #{i}"
   end
 
-[10, 1, 110, 10000, 9000]
+[10, 1, 110, 10000, 9000, 876]
   .each do |i|
     res = bigger_with_same_digits(i)
     assert res == i, "#{res} == #{i}"
