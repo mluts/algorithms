@@ -16,23 +16,38 @@ NUMS = <<EOF.lines.map { |l| l.split.map(&:to_i) }
 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
 EOF
 
-def main
-  max_indices = NUMS.each_with_index.map do |nums, row|
-    nums.each_with_index.max_by(&:first)
+def best_route_at(rows, row, prev_col)
+  nums = rows[row]
+
+  [prev_col, prev_col + 1].max_by do |col|
+    next_row = rows[row+1]
+
+    if next_row
+      next_col = best_route_at(rows, row + 1, col)
+      nums[col] + next_row[next_col]
+    else
+      nums[col]
+    end
   end
-  sum, col_indexes = 0, []
-  NUMS.each_with_index do |nums, row|
-    if nums.size == 1
-      sum += nums.first
-      col_indexes << 0
+end
+
+def main
+  res = NUMS.each_with_index.each_with_object({}) do |(nums, row), acc|
+    acc[:sum]  ||= 0
+    acc[:cols] ||= []
+
+    if acc[:cols].empty?
+      acc[:cols] << 0
+      acc[:sum] += nums[0]
       next
     end
 
-    a, b, c = max_indices.values_at(row, row+1, row+2)
-    # col_index = max_indices[row]
+    col = best_route_at(NUMS, row, acc[:cols].last)
+    acc[:sum] += nums[col]
+    acc[:cols] << col
   end
-  # puts indexes.inspect
-  # puts "Sum: #{sum}"
+
+  puts "Sum: #{res[:sum]}"
 end
 
 main if $0 == __FILE__
